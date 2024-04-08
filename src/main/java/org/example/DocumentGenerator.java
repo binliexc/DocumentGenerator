@@ -50,8 +50,8 @@ public class DocumentGenerator {
      */
     public static List<InterfaceInfo> convert(String json) {
         JSONObject jsonObject = JSONObject.parseObject(json);
+        Map<String, List<InterfaceInfo>> tag1Map = new HashMap<>();
         JSONObject paths = jsonObject.getJSONObject("paths");
-        List<InterfaceInfo> interfaceInfos = new ArrayList<>();
         for (Map.Entry<String, Object> entry : paths.entrySet()) {
             InterfaceInfo interfaceInfo = new InterfaceInfo();
             interfaceInfo.path = entry.getKey();
@@ -63,6 +63,13 @@ public class DocumentGenerator {
             interfaceInfo.description = detail.getString("description");
             String tagsStr = detail.getJSONArray("tags").getString(0);
             String[] tags = tagsStr.split("/");
+            List<InterfaceInfo> interfaceInfos;
+            if (!tag1Map.containsKey(tags[1])) {
+                interfaceInfos = new ArrayList<>();
+                tag1Map.put(tags[1], interfaceInfos);
+            } else {
+                interfaceInfos = tag1Map.get(tags[1]);
+            }
             if (interfaceInfos.size() == 0) {
                 interfaceInfo.tag1 = tags[1];
             }
@@ -92,7 +99,7 @@ public class DocumentGenerator {
                     }
                     interfaceInfo.req = req;
                 }
-            } else {
+            } else if (detail.getJSONObject("requestBody") != null) {
                 JSONObject postContent = detail.getJSONObject("requestBody").getJSONObject("content");
                 interfaceInfo.reqContentType = postContent.keySet().stream().toList().get(0);
                 JSONObject schema = postContent.getJSONObject(interfaceInfo.reqContentType).getJSONObject("schema");
@@ -103,11 +110,33 @@ public class DocumentGenerator {
                 NormalField[] req = new NormalField[1];
                 req[0] = normalField;
                 interfaceInfo.req = req;
-                JSONObject properties = schema.getJSONObject("properties");
-                ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(properties);
-                interfaceInfo.reqFields = reqParamsAndJson.fields;
-                interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-                        SerializerFeature.WriteDateUseDateFormat));
+                if (normalField.dataType.equals("array")) {
+                    JSONObject reqItems = schema.getJSONObject("items");
+                    String type = reqItems.getString("type");
+                    if (!type.equals("object")) {
+                        JSONArray array = new JSONArray();
+                        if (type.equals("string")) {
+                            array.add("string");
+                        } else if (type.equals("integer")) {
+                            array.add(0);
+                        } else if (type.equals("boolean")) {
+                            array.add(true);
+                        }
+                        interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(array, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                                SerializerFeature.WriteDateUseDateFormat));
+                    } else {
+                        ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(reqItems.getJSONObject("properties"));
+                        interfaceInfo.reqFields = reqParamsAndJson.fields;
+                        interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                                SerializerFeature.WriteDateUseDateFormat));
+                    }
+                } else {
+                    JSONObject properties = schema.getJSONObject("properties");
+                    ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(properties);
+                    interfaceInfo.reqFields = reqParamsAndJson.fields;
+                    interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                            SerializerFeature.WriteDateUseDateFormat));
+                }
                 interfaceInfo.reqName = "body";
             }
             JSONObject repContent = detail.getJSONObject("responses").getJSONObject("200").getJSONObject("content");
@@ -116,7 +145,9 @@ public class DocumentGenerator {
                     .getJSONObject("schema")
                     .getJSONObject("properties")
                     .getJSONObject("data");
-            interfaceInfo.repDataType = data.getString("type");
+            if (data != null) {
+                interfaceInfo.repDataType = data.getString("type");
+            }
             JSONObject repJsonObject = new JSONObject();
             repJsonObject.put("meta", meta);
 
@@ -145,7 +176,11 @@ public class DocumentGenerator {
                     SerializerFeature.WriteDateUseDateFormat));
             interfaceInfos.add(interfaceInfo);
         }
-        return interfaceInfos;
+        List<InterfaceInfo> res = new ArrayList<>();
+        for (Map.Entry<String, List<InterfaceInfo>> stringListEntry : tag1Map.entrySet()) {
+            res.addAll(stringListEntry.getValue());
+        }
+        return res;
     }
 
     /**
