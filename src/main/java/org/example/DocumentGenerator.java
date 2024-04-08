@@ -1,7 +1,9 @@
 package org.example;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
@@ -15,22 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Hello world!
- *
- */
 public class DocumentGenerator {
+    private static JSONObject meta = new JSONObject();
+
+    static {
+        meta.put("code", "0000");
+        meta.put("message", "操作成功");
+    }
 
     public static void main( String[] args ) throws Exception {
-//        String outPutFilePath = "结果.docx";
-//        try (InputStream ins = new FileInputStream("模板测试.docx");
-//             OutputStream out = new FileOutputStream(outPutFilePath)) {
-//            // 注册xdocreport实例并加载FreeMarker模板引擎
-//            IXDocReport report = XDocReportRegistry.getRegistry().loadReport(ins, TemplateEngineKind.Freemarker);
-//
-//            IContext context = report.createContext();
-//            context.put("")
-//        }
         String prefix = DocumentGenerator.class.getResource("/").getFile();
         String outPutFilePath = prefix + "结果.docx";
         Configuration configuration = new Configuration(Configuration.getVersion());
@@ -68,14 +63,16 @@ public class DocumentGenerator {
             interfaceInfo.description = detail.getString("description");
             String tagsStr = detail.getJSONArray("tags").getString(0);
             String[] tags = tagsStr.split("/");
-            interfaceInfo.tag1 = tags[1];
+            if (interfaceInfos.size() == 0) {
+                interfaceInfo.tag1 = tags[1];
+            }
             if (tags.length == 3) {
                 interfaceInfo.tag2 = tags[2] + "-" + detail.getString("summary");
             } else {
                 interfaceInfo.tag2 = detail.getString("summary");
             }
-
-            if (interfaceInfo.method.equals("get")) {
+            interfaceInfo.method = interfaceInfo.method.toUpperCase();
+            if (interfaceInfo.method.equals("GET")) {
                 JSONArray parameters = detail.getJSONArray("parameters");
                 List<JSONObject> parametersAfterFilter = parameters.stream().filter(p -> {
                     JSONObject param = (JSONObject) p;
@@ -107,7 +104,10 @@ public class DocumentGenerator {
                 req[0] = normalField;
                 interfaceInfo.req = req;
                 JSONObject properties = schema.getJSONObject("properties");
-                interfaceInfo.reqFields = getReqRepParams(properties);
+                ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(properties);
+                interfaceInfo.reqFields = reqParamsAndJson.fields;
+                interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                        SerializerFeature.WriteDateUseDateFormat));
                 interfaceInfo.reqName = "body";
             }
             JSONObject repContent = detail.getJSONObject("responses").getJSONObject("200").getJSONObject("content");
@@ -117,13 +117,32 @@ public class DocumentGenerator {
                     .getJSONObject("properties")
                     .getJSONObject("data");
             interfaceInfo.repDataType = data.getString("type");
-            if (interfaceInfo.repDataType.equals("array")) {
-                JSONObject properties = data.getJSONObject("items").getJSONObject("properties");
-                interfaceInfo.repFields = getReqRepParams(properties);
-            } else if (interfaceInfo.repDataType.equals("object")) {
-                JSONObject properties = data.getJSONObject("properties");
-                interfaceInfo.repFields = getReqRepParams(properties);
+            JSONObject repJsonObject = new JSONObject();
+            repJsonObject.put("meta", meta);
+
+            if (!interfaceInfo.repDataType.equals("array") && !interfaceInfo.repDataType.equals("object")) {
+                if (interfaceInfo.repDataType.equals("string")) {
+                    repJsonObject.put("data", "string");
+                } else if (interfaceInfo.repDataType.equals("integer")) {
+                    repJsonObject.put("data", 0);
+                } else if (interfaceInfo.repDataType.equals("boolean")) {
+                    repJsonObject.put("data", true);
+                }
+            } else {
+                JSONObject properties = null;
+                if (interfaceInfo.repDataType.equals("array")) {
+                    properties = data.getJSONObject("items").getJSONObject("properties");
+                } else if (interfaceInfo.repDataType.equals("object")) {
+                    properties = data.getJSONObject("properties");
+                }
+                if (properties != null) {
+                    ParamsAndJsonObject repParamsAndJson = getReqRepParamsAndJson(properties);
+                    interfaceInfo.repFields = repParamsAndJson.fields;
+                    repJsonObject.put("data", repParamsAndJson.jsonObject);
+                }
             }
+            interfaceInfo.repJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(repJsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
+                    SerializerFeature.WriteDateUseDateFormat));
             interfaceInfos.add(interfaceInfo);
         }
         return interfaceInfos;
@@ -135,8 +154,9 @@ public class DocumentGenerator {
      * @param properties
      * @return
      */
-    public static List<Field> getReqRepParams(JSONObject properties) {
+    public static ParamsAndJsonObject getReqRepParamsAndJson(JSONObject properties) {
         List<Field> fields = new ArrayList<>(properties.size());
+        JSONObject jsonObject = new JSONObject();
         for (Map.Entry<String, Object> p : properties.entrySet()) {
             Field field = new Field();
             JSONObject val = (JSONObject)p.getValue();
@@ -146,18 +166,47 @@ public class DocumentGenerator {
             fields.add(field);
             if (field.fieldType.equals("array")) {
                 JSONObject items = val.getJSONObject("items");
+                JSONArray array = new JSONArray();
                 if (items.getString("type").equals("object")) {
-                    fields.addAll(getReqRepParams(items.getJSONObject("properties")));
+                    ParamsAndJsonObject childProperties = getReqRepParamsAndJson(items.getJSONObject("properties"));
+                    fields.addAll(childProperties.fields);
+                    array.add(childProperties.jsonObject);
                 } else {
-                    // 字符串数组的情况
                     Field stringField = new Field();
-                    stringField.fieldType = "string";
+                    stringField.fieldType = items.getString("type");
                     fields.add(stringField);
+                    if (field.fieldType.equals("string")) {
+                        array.add("string");
+                    } else if (field.fieldType.equals("integer")) {
+                        array.add(0);
+                    } else if (field.fieldType.equals("boolean")) {
+                        array.add(true);
+                    }
                 }
+                jsonObject.put(field.fieldName, array);
                 fields.add(field);
+            } else {
+                if (field.fieldType.equals("string")) {
+                    jsonObject.put(field.fieldName, "string");
+                } else if (field.fieldType.equals("integer")) {
+                    jsonObject.put(field.fieldName, 0);
+                } else if (field.fieldType.equals("boolean")) {
+                    jsonObject.put(field.fieldName, true);
+                }
             }
         }
-        return fields;
+        return new ParamsAndJsonObject(fields, jsonObject);
+    }
+
+    public static class ParamsAndJsonObject {
+        List<Field> fields;
+
+        JSONObject jsonObject;
+
+        public ParamsAndJsonObject(List<Field> fields, JSONObject jsonObject) {
+            this.fields = fields;
+            this.jsonObject = jsonObject;
+        }
     }
 
     /**

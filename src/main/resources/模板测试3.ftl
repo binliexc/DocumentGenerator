@@ -29,6 +29,7 @@
             <w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" xmlns:wpsCustomData="http://www.wps.cn/officeDocument/2013/wpsCustomData" mc:Ignorable="w14 w15 wp14">
                 <w:body>
                 <#list itemList as item>
+                    <#if item.tag1?? && item.tag1 != "">
                     <w:p>
                         <w:pPr>
                             <w:pStyle w:val="2" />
@@ -83,6 +84,7 @@
                             <w:fldChar w:fldCharType="end" />
                         </w:r>
                     </w:p>
+                    </#if>
                     <w:p>
                         <w:pPr>
                             <w:pStyle w:val="3" />
@@ -242,6 +244,7 @@
                             <w:fldChar w:fldCharType="end" />
                         </w:r>
                     </w:p>
+                    <#if item.reqContentType?? && item.reqContentType != "">
                     <w:p>
                         <w:pPr>
                             <w:bidi w:val="0" />
@@ -288,6 +291,7 @@
                             <w:fldChar w:fldCharType="end" />
                         </w:r>
                     </w:p>
+                    </#if>
                     <w:p>
                         <w:pPr>
                             <w:bidi w:val="0" />
@@ -3108,6 +3112,7 @@
                             <w:fldChar w:fldCharType="end" />
                         </w:r>
                     </w:p>
+                    <#if item.repFields?exists && (item.repFields?size > 0)>
                     <w:p>
                         <w:pPr>
                             <w:bidi w:val="0" />
@@ -3302,7 +3307,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        <#if item.repFields?exists && (item.repFields?size > 0)>
+                        
                         <#list item.repFields as repParams>
                         <w:tr>
                             <w:tblPrEx>
@@ -3542,8 +3547,8 @@
                             </w:tc>
                         </w:tr>
                         </#list>
-                        </#if>
                     </w:tbl>
+                    </#if>
                     <w:p>
                         <w:pPr>
                             <w:rPr>
