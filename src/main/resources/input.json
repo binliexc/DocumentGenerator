@@ -1,0 +1,1329 @@
+{
+	"openapi": "3.0.1",
+	"info": {
+		"title": "V4",
+		"description": "",
+		"version": "1.0.0"
+	},
+	"tags": [
+		{
+			"name": "护照"
+		},
+		{
+			"name": "护照/护照办理"
+		},
+		{
+			"name": "护照/护照办理/护照接案"
+		}
+	],
+	"paths": {
+		"/passport/queryTodaySum": {
+			"get": {
+				"summary": "统计数据",
+				"deprecated": false,
+				"description": "",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"todayAppointment": {
+													"type": "integer",
+													"title": "今日预约"
+												},
+												"todayNotAccepted": {
+													"type": "integer",
+													"title": "今日未接案"
+												},
+												"drafts": {
+													"type": "integer",
+													"title": "草稿箱"
+												},
+												"waitCorrected": {
+													"type": "integer",
+													"title": "待改错"
+												}
+											},
+											"required": [
+												"todayAppointment",
+												"todayNotAccepted",
+												"drafts",
+												"waitCorrected"
+											]
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								},
+								"examples": {
+									"1": {
+										"summary": "成功示例",
+										"value": {
+											"meta": {
+												"code": "0000",
+												"message": "操作成功"
+											},
+											"data": {
+												"todayAppointment": 0,
+												"todayNotAccepted": 0,
+												"drafts": 0,
+												"waitCorrected": 0
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		},
+		"/passport/todayApply": {
+			"post": {
+				"summary": "申请今日受理",
+				"deprecated": false,
+				"description": "可重复申请",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"requestNo": {
+										"type": "string",
+										"title": "申请单号",
+										"description": "取值为查询列表返回字段"
+									},
+									"id": {
+										"type": "integer",
+										"title": "主键"
+									},
+									"reason": {
+										"type": "string",
+										"title": "申请说明"
+									}
+								},
+								"required": [
+									"requestNo",
+									"reason",
+									"id"
+								]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								},
+								"examples": {
+									"1": {
+										"summary": "成功示例",
+										"value": {
+											"meta": {
+												"code": "0000",
+												"message": "操作成功"
+											},
+											"data": true
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		},
+		"/v1/passport/queryAppList": {
+			"post": {
+				"summary": "APP预约数据查询",
+				"deprecated": false,
+				"description": "性别选择不限时，不传sex字段；当所有参数为空时，会返回错误提示，禁止所有参数为空能点击查询",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"no": {
+										"type": "string",
+										"title": "一体机凭条/预约号/申请单号"
+									},
+									"name": {
+										"type": "string",
+										"title": "姓名"
+									},
+									"sex": {
+										"type": "integer",
+										"title": "性别",
+										"description": "选择不限时不传该参数"
+									},
+									"birthday": {
+										"type": "string",
+										"title": "出生日期"
+									}
+								},
+								"required": [
+									"no",
+									"name",
+									"sex",
+									"birthday"
+								]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "integer",
+														"title": "主键"
+													},
+													"requestNo": {
+														"type": "string",
+														"title": "申请单号"
+													},
+													"personUrl": {
+														"type": "string",
+														"title": "图片"
+													},
+													"appointmentDateTime": {
+														"type": "string",
+														"title": "预约时间",
+														"description": "前段需要拼接预约日期+预约时间",
+														"nullable": true
+													},
+													"appointmentMessage": {
+														"type": "string",
+														"title": "预约提示",
+														"description": "前段需要拼接预约日期+预约时间",
+														"nullable": true
+													},
+													"name": {
+														"type": "string",
+														"title": "姓名"
+													},
+													"sexFront": {
+														"type": "string",
+														"title": "性别"
+													},
+													"birthday": {
+														"type": "string",
+														"title": "出生日期"
+													},
+													"cardKindFront": {
+														"type": "string",
+														"title": "证件种类"
+													},
+													"businessTypeFront": {
+														"type": "string",
+														"title": "业务类型"
+													},
+													"approveStatus": {
+														"type": "integer",
+														"title": "审批状态 0未申请（今日受理） 1待审批 2审批通过 3审批不通过"
+													}
+												},
+												"required": [
+													"personUrl",
+													"approveStatus"
+												]
+											}
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								},
+								"examples": {
+									"1": {
+										"summary": "异常示例",
+										"value": {
+											"meta": {
+												"code": "0001",
+												"message": "禁止条件全部为空"
+											},
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		},
+		"/passport/createRequestNo": {
+			"get": {
+				"summary": "申请单号创建",
+				"deprecated": false,
+				"description": "现场办理时，需要先调用该接口，生成一个申请单号",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		},
+		"/passport/highlight": {
+			"get": {
+				"summary": "查询是否高亮",
+				"deprecated": false,
+				"description": "查询是否高亮",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "name",
+						"in": "query",
+						"description": "",
+						"required": true,
+						"example": "",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"description": "类型1民族2出生日期3出生地",
+						"required": true,
+						"example": "",
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "boolean",
+											"description": "true为高亮显示"
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		},
+		"/passport/acceptInfo/{id}": {
+			"get": {
+				"summary": "受理信息详情查询",
+				"deprecated": false,
+				"description": "带Front后缀字段的 为中文显示名词",
+				"tags": [
+					"护照/护照办理/护照接案"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "",
+						"required": true,
+						"schema": {
+							"type": "number"
+						}
+					},
+					{
+						"name": "cert",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM2akNDQXBDZ0F3SUJBZ0lVTHU3Y3BLRW02SnNmTXNBb1ZKNlBwWGVjUFB3d0NnWUlLb1pJemowRUF3SXcKYURFTE1Ba0dBMVVFQmhNQ1ZWTXhGekFWQmdOVkJBZ1REazV2Y25Sb0lFTmhjbTlzYVc1aE1SUXdFZ1lEVlFRSwpFd3RJZVhCbGNteGxaR2RsY2pFUE1BMEdBMVVFQ3hNR1JtRmljbWxqTVJrd0Z3WURWUVFERXhCbVlXSnlhV010ClkyRXRjMlZ5ZG1WeU1CNFhEVEl3TVRJeU1qQXlNamN3TUZvWERUSXhNVEl5TWpBeU16SXdNRm93Z1lVeEN6QUoKQmdOVkJBWVRBbFZUTVJjd0ZRWURWUVFJRXc1T2IzSjBhQ0JEWVhKdmJHbHVZVEVVTUJJR0ExVUVDaE1MU0hsdwpaWEpzWldSblpYSXhLekFOQmdOVkJBc1RCbU5zYVdWdWREQUtCZ05WQkFzVEEyTnZiVEFPQmdOVkJBc1RCMlY0CllXMXdiR1V4R2pBWUJnTlZCQU1NRVVGa2JXbHVRR1Y0WVcxd2JHVXVZMjl0TUZrd0V3WUhLb1pJemowQ0FRWUkKS29aSXpqMERBUWNEUWdBRWJwR0pMRnhpQzhITHJiY2FsMEVwQjFYRDJnZDRYZ0FwQVRTYkF4ZW15bXFyNndzYgpPWVFrVTRic3FabE9paTJCRHplYlJQbnpacnBmUXQraTRicUg5cU9CK1RDQjlqQU9CZ05WSFE4QkFmOEVCQU1DCkI0QXdEQVlEVlIwVEFRSC9CQUl3QURBZEJnTlZIUTRFRmdRVWRNMmdtbEF6ODR6UlJBMW9UUU4xSW9nMUtqa3cKSHdZRFZSMGpCQmd3Rm9BVXlGakpFWXdQWktEbEloWUoxNXhuMXEwRXdBc3dGZ1lEVlIwUkJBOHdEWUlMWlhoaApiWEJzWlM1amIyMHdmZ1lJS2dNRUJRWUhDQUVFY25zaVlYUjBjbk1pT25zaWFHWXVRV1ptYVd4cFlYUnBiMjRpCk9pSmpiMjB1WlhoaGJYQnNaU0lzSW1obUxrVnVjbTlzYkcxbGJuUkpSQ0k2SWtGa2JXbHVRR1Y0WVcxd2JHVXUKWTI5dElpd2lhR1l1Vkhsd1pTSTZJbU5zYVdWdWRDSXNJbkp2YkdVaU9pSmhaRzFwYmlKOWZUQUtCZ2dxaGtqTwpQUVFEQWdOSUFEQkZBaUVBdlFBbHBVR05ma3lGbXlUSkhCVzdHOGVUOUdaaDlGZmZYaU9GbUVqdDFNNENJR0hyCktJcldsa3dHUm1raXhpN20xR0dXeE43QTJlSUtnanF4NmJPbEc0cUoKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "cert_type",
+						"in": "header",
+						"description": "",
+						"required": true,
+						"example": "cert_pc",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"meta": {
+											"type": "object",
+											"properties": {
+												"code": {
+													"type": "string"
+												},
+												"message": {
+													"type": "string"
+												}
+											},
+											"required": [
+												"code",
+												"message"
+											]
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer",
+													"title": "主键"
+												},
+												"requestNo": {
+													"type": "string",
+													"title": "申请单号"
+												},
+												"source": {
+													"type": "integer",
+													"title": "来源 0 APP 1现场办理"
+												},
+												"status": {
+													"type": "integer",
+													"title": "状态 0草稿箱 1待受理 2待核查 3待修改 4待审核 5待复核 6挂起 7待制证 8待取证 9已发证 10待发送数据 11待回填数据 12退件 13退件已退还 14取消受理 15护照复核-加急审批"
+												},
+												"statusFront": {
+													"type": "string",
+													"title": "状态_前端显示名"
+												},
+												"cardKind": {
+													"type": "string",
+													"title": "证件种类"
+												},
+												"cardKindFront": {
+													"type": "string",
+													"title": "证件种类_前端显示名"
+												},
+												"businessType": {
+													"type": "string",
+													"title": "业务类型"
+												},
+												"businessTypeFront": {
+													"type": "string",
+													"title": "业务类型_前端显示名"
+												},
+												"passportCheck": {
+													"type": "integer",
+													"title": "是否核查申请人护照情况 0否 1是"
+												},
+												"appointmentDate": {
+													"type": "string",
+													"title": "预约日期",
+													"description": "两者拼接"
+												},
+												"appointmentTime": {
+													"type": "string",
+													"title": "预约时间"
+												},
+												"conflictCountryFront": {
+													"type": "array",
+													"items": {
+														"type": "string"
+													},
+													"title": "国籍冲突_前端显示名"
+												},
+												"reason": {
+													"type": "string",
+													"title": "现场办理原因"
+												},
+												"personUrl": {
+													"type": "string",
+													"title": "申请人信息_图片"
+												},
+												"personIllustrate": {
+													"type": "string",
+													"title": "申请人信息_图片说明"
+												},
+												"chineseSurname": {
+													"type": "string",
+													"title": "申请人信息_中文姓"
+												},
+												"chineseName": {
+													"type": "string",
+													"title": "申请人信息_中文名"
+												},
+												"sex": {
+													"type": "string",
+													"title": "申请人信息_性别_code"
+												},
+												"sexFront": {
+													"type": "string",
+													"title": "申请人信息_性别_前端显示名"
+												},
+												"pinyinSurname": {
+													"type": "string",
+													"title": "申请人信息_拼音姓"
+												},
+												"pinyinSurnameSpace": {
+													"type": "boolean",
+													"title": "申请人信息_拼音姓是否包含空格"
+												},
+												"pinyinName": {
+													"type": "string",
+													"title": "申请人信息_拼音名"
+												},
+												"pinyinNameSpace": {
+													"type": "boolean",
+													"title": "申请人信息_拼音名是否包含空格"
+												},
+												"nation": {
+													"type": "string",
+													"title": "申请人信息_民族"
+												},
+												"nationHighlight": {
+													"type": "boolean",
+													"title": "申请人信息_民族是否高亮显示"
+												},
+												"nationFront": {
+													"type": "string",
+													"title": "申请人信息_民族_前端显示名"
+												},
+												"birthday": {
+													"type": "string",
+													"title": "申请人信息_出生日期"
+												},
+												"birthdayHighlight": {
+													"type": "boolean",
+													"title": "申请人信息_出生日期是否高亮显示"
+												},
+												"birthPlace": {
+													"type": "string",
+													"title": "申请人信息_出生地点"
+												},
+												"birthPlaceHighlight": {
+													"type": "boolean",
+													"title": "申请人信息_出生地点是否高亮显示"
+												},
+												"idCard": {
+													"type": "string",
+													"title": "申请人信息_身份证号"
+												},
+												"cardNote": {
+													"type": "string",
+													"title": "申请人信息_备注"
+												},
+												"photoUrl": {
+													"type": "string",
+													"title": "申办新证信息_证件照"
+												},
+												"officialDuty": {
+													"type": "string",
+													"title": "申办新证信息_因公职务"
+												},
+												"officialDutyFront": {
+													"type": "string",
+													"title": "申办新证信息_因公职务_前端显示名"
+												},
+												"photoIllustrate": {
+													"type": "string",
+													"title": "申办新证信息_证件照说明"
+												},
+												"cardValid": {
+													"type": "integer",
+													"title": "申办新证信息_新证件有效期时间"
+												},
+												"cardValidUnit": {
+													"type": "string",
+													"title": "申办新证信息_新证件有效期单位"
+												},
+												"cardFills": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"id": {
+																"type": "integer",
+																"title": "主键"
+															},
+															"requestNo": {
+																"type": "string",
+																"title": "申请单号"
+															},
+															"type": {
+																"type": "integer",
+																"title": "加注类型 1姓名 2曾用名 3自定义 4换发 5补发 6曾持照"
+															},
+															"chineseContent": {
+																"type": "string",
+																"title": "中文加注内容"
+															},
+															"foreignContent": {
+																"type": "string",
+																"title": "英文加注内容"
+															},
+															"charge": {
+																"type": "integer",
+																"title": "是否收费 0不收费 1收费"
+															}
+														}
+													},
+													"title": "加注"
+												},
+												"issueDays": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_颁发日"
+												},
+												"issueDaysExtra": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_颁发日其它"
+												},
+												"stopDays": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_停留日"
+												},
+												"stopDaysExtra": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_停留日其它"
+												},
+												"nativePlace": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_籍贯"
+												},
+												"nativePlaceFront": {
+													"type": "string",
+													"title": "申办新证信息_藏胞加注_籍贯_前端显示名"
+												},
+												"fillList": {
+													"type": "array",
+													"items": {
+														"type": "string"
+													},
+													"title": "申办新证信息_藏胞加注_选择加注，以list返回对应code"
+												},
+												"identity": {
+													"type": "string",
+													"title": "申办新证信息_对外身份"
+												},
+												"identityFront": {
+													"type": "string",
+													"title": "申办新证信息_对外身份_前端显示名"
+												},
+												"content": {
+													"type": "string",
+													"title": "申办新证信息_对外身份_加注内容1"
+												},
+												"contentExtra": {
+													"type": "string",
+													"title": "申办新证信息_对外身份_加注内容2"
+												},
+												"photoStatus": {
+													"type": "integer",
+													"title": "申办新证信息_现场照片0未采集1已采集"
+												},
+												"photoStatusFront": {
+													"type": "string",
+													"title": "申办新证信息_现场照片0未采集1已采集_前端显示名"
+												},
+												"fingerprintStatus": {
+													"type": "integer",
+													"title": "申办新证信息_指纹0未采集1已采集"
+												},
+												"fingerprintStatusFront": {
+													"type": "string",
+													"title": "申办新证信息_指纹0未采集1已采集_前端显示名"
+												},
+												"signatureStatus": {
+													"type": "integer",
+													"title": "申办新证信息_签名0未采集1已采集"
+												},
+												"signatureStatusFront": {
+													"type": "string",
+													"title": "申办新证信息_签名0未采集1已采集_前端显示名"
+												},
+												"ytjPhotoUrl": {
+													"type": "string",
+													"title": "申办新证信息_一体机现场照片url地址"
+												},
+												"ytjFingerUrl": {
+													"type": "string",
+													"title": "申办新证信息_一体机指纹url地址"
+												},
+												"ytjSignUrl": {
+													"type": "string",
+													"title": "申办新证信息_一体机签名url地址"
+												},
+												"fingerprintReason": {
+													"type": "string",
+													"title": "申办新证信息_指纹不采集原因"
+												},
+												"fingerprintReasonFront": {
+													"type": "string",
+													"title": "申办新证信息_指纹不采集原因_前端显示名"
+												},
+												"signatureReason": {
+													"type": "string",
+													"title": "申办新证信息_签名不采集原因"
+												},
+												"signatureReasonFront": {
+													"type": "string",
+													"title": "申办新证信息_签名不采集原因_前端显示名"
+												},
+												"cardIllustrate": {
+													"type": "string",
+													"title": "现持证信息_证件情况"
+												},
+												"cardType": {
+													"type": "string",
+													"title": "现持证信息_证件类型"
+												},
+												"cardTypeFront": {
+													"type": "string",
+													"title": "现持证信息_证件类型_前端显示名"
+												},
+												"illustrate": {
+													"type": "string",
+													"title": "现持证信息_其他，说明情况"
+												},
+												"cardNo": {
+													"type": "string",
+													"title": "现持证信息_证件号码"
+												},
+												"issuePlace": {
+													"type": "string",
+													"title": "现持证信息_签发地点"
+												},
+												"issuePlaceFront": {
+													"type": "string",
+													"title": "现持证信息_签发地点_前端显示名"
+												},
+												"issueDate": {
+													"type": "string",
+													"title": "现持证信息_签发日期"
+												},
+												"effectiveDate": {
+													"type": "string",
+													"title": "现持证信息_有效期至"
+												},
+												"domesticDispatchedUnits": {
+													"type": "string",
+													"title": "现持证信息_国内派出单位"
+												},
+												"lostOrDestroy": {
+													"type": "integer",
+													"title": "现持证信息_是否丢失或者损毁0否1是"
+												},
+												"lostOrDestroyFront": {
+													"type": "string",
+													"title": "现持证信息_是否丢失或者损毁0否1是_前端显示名"
+												},
+												"recentlyOutbound": {
+													"type": "string",
+													"title": "现持证信息_最近出境"
+												},
+												"checks": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"id": {
+																"type": "integer",
+																"title": "主键"
+															},
+															"requestNo": {
+																"type": "string",
+																"title": "申请单号"
+															},
+															"name": {
+																"type": "string",
+																"title": "姓名"
+															},
+															"sex": {
+																"type": "string",
+																"title": "性别"
+															},
+															"birthday": {
+																"type": "string",
+																"title": "出生日期"
+															},
+															"idCard": {
+																"type": "string",
+																"title": "身份证号"
+															},
+															"birthPlace": {
+																"type": "string",
+																"title": "出生地点"
+															},
+															"registerPlace": {
+																"type": "string",
+																"title": "户籍地"
+															},
+															"cardKind": {
+																"type": "string",
+																"title": "证件种类"
+															},
+															"cardKindFront": {
+																"type": "string",
+																"title": "证件种类_前端"
+															},
+															"cardNo": {
+																"type": "string",
+																"title": "证件号码"
+															},
+															"cardNoHighlight": {
+																"type": "boolean",
+																"title": "证件号码是否高亮显示"
+															},
+															"issuePlace": {
+																"type": "string",
+																"title": "签发地"
+															},
+															"issuePlaceFront": {
+																"type": "string",
+																"title": "现持证信息_签发地点_前端显示名"
+															},
+															"issueDate": {
+																"type": "string",
+																"title": "签发日期"
+															},
+															"effectiveDate": {
+																"type": "string",
+																"title": "有效期至"
+															},
+															"cardType": {
+																"type": "string",
+																"title": "证件类型"
+															},
+															"cardTypeFront": {
+																"type": "string",
+																"title": "证件类型"
+															},
+															"invalidOffice": {
+																"type": "string",
+																"title": "失效机关"
+															},
+															"invalidReason": {
+																"type": "string",
+																"title": "失效原因"
+															},
+															"file": {
+																"type": "string",
+																"title": "图片"
+															},
+															"description": {
+																"type": "string",
+																"title": "描述"
+															},
+															"faceSimilarity": {
+																"type": "string",
+																"title": "面相相似度"
+															}
+														}
+													},
+													"title": "专线核查结果"
+												},
+												"certificateNo": {
+													"type": "string",
+													"title": "取证单_取证单号"
+												},
+												"certificateFlag": {
+													"type": "boolean",
+													"title": "为true表示自动生成"
+												},
+												"handleMode": {
+													"type": "string",
+													"title": "取证单_办理方式"
+												},
+												"handleModeFront": {
+													"type": "string",
+													"title": "取证单_办理方式_前端显示名"
+												},
+												"billMode": {
+													"type": "string",
+													"title": "取证单_计费方式"
+												},
+												"billModeFront": {
+													"type": "string",
+													"title": "取证单_计费方式_前端显示名"
+												},
+												"currencyType": {
+													"type": "string",
+													"title": "取证单_货币种类"
+												},
+												"currencyTypeFront": {
+													"type": "string",
+													"title": "取证单_货币种类_前端显示名"
+												},
+												"evidenceNote": {
+													"type": "string",
+													"title": "取证单_取证单备注"
+												},
+												"exemptionReason": {
+													"type": "string",
+													"title": "取证单_减免原因"
+												},
+												"exemptionReasonFront": {
+													"type": "string",
+													"title": "取证单_减免原因_前端显示名"
+												},
+												"exemptionIllustrate": {
+													"type": "string",
+													"title": "取证单_减免描述"
+												},
+												"evidenceWay": {
+													"type": "string",
+													"title": "取证单_取证方式"
+												},
+												"evidenceWayFront": {
+													"type": "string",
+													"title": "取证单_取证方式_前端显示名"
+												},
+												"mailCountry": {
+													"type": "string",
+													"title": "取证单_邮寄国家"
+												},
+												"mailCountryFront": {
+													"type": "string",
+													"title": "取证单_邮寄国家_前端显示名"
+												},
+												"mailCode": {
+													"type": "string",
+													"title": "取证单_邮寄编码"
+												},
+												"mailAddress": {
+													"type": "string",
+													"title": "取证单_邮寄地址"
+												},
+												"contactName": {
+													"type": "string",
+													"title": "取证单_联系人姓名"
+												},
+												"contactPhone": {
+													"type": "string",
+													"title": "取证单_联系人电话"
+												},
+												"channel": {
+													"type": "string",
+													"title": "支付信息_支付渠道"
+												},
+												"amount": {
+													"type": "integer",
+													"title": "支付信息_支付金额"
+												},
+												"payCurrencyType": {
+													"type": "string",
+													"title": "支付信息_货币种类"
+												},
+												"payStatus": {
+													"type": "string",
+													"title": "支付信息_支付状态"
+												},
+												"applyStatus": {
+													"type": "integer",
+													"title": "是否有生成申请单 0否 1是"
+												},
+												"checkNote": {
+													"type": "string",
+													"title": "待复核备注"
+												},
+												"files": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"fieldName": {
+																"type": "string",
+																"title": "材料名称"
+															},
+															"base64Pic": {
+																"type": "string",
+																"title": "材料内容  路径"
+															}
+														}
+													}
+												}
+											},
+											"required": [
+												"id",
+												"requestNo",
+												"source",
+												"status",
+												"statusFront",
+												"cardKind",
+												"cardKindFront",
+												"businessType",
+												"businessTypeFront",
+												"passportCheck",
+												"appointmentDate",
+												"appointmentTime",
+												"personUrl",
+												"personIllustrate",
+												"chineseSurname",
+												"chineseName",
+												"sex",
+												"sexFront",
+												"pinyinSurname",
+												"pinyinSurnameSpace",
+												"pinyinName",
+												"pinyinNameSpace",
+												"nation",
+												"nationHighlight",
+												"nationFront",
+												"birthday",
+												"birthdayHighlight",
+												"birthPlace",
+												"birthPlaceHighlight",
+												"idCard",
+												"cardNote",
+												"photoUrl",
+												"photoIllustrate",
+												"cardValid",
+												"cardValidUnit",
+												"cardFills",
+												"issueDays",
+												"stopDays",
+												"stopDaysExtra",
+												"nativePlace",
+												"nativePlaceFront",
+												"fillList",
+												"photoStatus",
+												"photoStatusFront",
+												"fingerprintStatus",
+												"fingerprintStatusFront",
+												"signatureStatus",
+												"signatureStatusFront",
+												"ytjPhotoUrl",
+												"ytjFingerUrl",
+												"ytjSignUrl",
+												"fingerprintReason",
+												"fingerprintReasonFront",
+												"signatureReason",
+												"signatureReasonFront",
+												"cardIllustrate",
+												"cardType",
+												"cardTypeFront",
+												"illustrate",
+												"cardNo",
+												"issuePlace",
+												"issuePlaceFront",
+												"issueDate",
+												"effectiveDate",
+												"domesticDispatchedUnits",
+												"lostOrDestroy",
+												"lostOrDestroyFront",
+												"recentlyOutbound",
+												"checks",
+												"certificateNo",
+												"handleMode",
+												"handleModeFront",
+												"billMode",
+												"billModeFront",
+												"currencyType",
+												"currencyTypeFront",
+												"evidenceNote",
+												"exemptionReason",
+												"exemptionReasonFront",
+												"exemptionIllustrate",
+												"evidenceWay",
+												"evidenceWayFront",
+												"mailCountry",
+												"mailCountryFront",
+												"mailCode",
+												"mailAddress",
+												"contactName",
+												"contactPhone",
+												"channel",
+												"amount",
+												"payCurrencyType",
+												"payStatus",
+												"applyStatus",
+												"conflictCountryFront",
+												"reason",
+												"officialDuty",
+												"officialDutyFront",
+												"identity",
+												"identityFront",
+												"content",
+												"contentExtra",
+												"issueDaysExtra",
+												"checkNote",
+												"certificateFlag",
+												"files"
+											]
+										}
+									},
+									"required": [
+										"meta",
+										"data"
+									]
+								}
+							}
+						}
+					}
+				},
+				"security": []
+			}
+		}
+	},
+	"components": {
+		"schemas": {},
+		"securitySchemes": {}
+	},
+	"servers": []
+}
