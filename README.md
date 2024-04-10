@@ -1,0 +1,4 @@
+本项目起源于我不想浪费时间在手动编写几百个接口的接口文档，项目主要有3个类：InterfaceDocumentGenerator(接口文档生成器)、EntityDocumentGenerator(实体模型生成器)以及FreemarkerWordFormatUtil(用于XML文件特殊字符的转换)。
+项目生成的文档格式符合resources/需求规格说明书.docx中接口标题部分内容的格式。
+EntityDocumentGenerator的使用方法：
+InterfaceDocumentGenerator的使用方法：
