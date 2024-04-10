@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DocumentGenerator {
+/**
+ * 接口文档生成器
+ */
+public class InterfaceDocumentGenerator {
     private static JSONObject meta = new JSONObject();
 
     static {
@@ -26,7 +29,7 @@ public class DocumentGenerator {
     }
 
     public static void main( String[] args ) throws Exception {
-        String prefix = DocumentGenerator.class.getResource("/").getFile();
+        String prefix = InterfaceDocumentGenerator.class.getResource("/").getFile();
         String outPutFilePath = prefix + "结果.docx";
         Configuration configuration = new Configuration(Configuration.getVersion());
         configuration.setDirectoryForTemplateLoading(new File(prefix));

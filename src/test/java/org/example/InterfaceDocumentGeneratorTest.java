@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class DocumentGeneratorTest
+public class InterfaceDocumentGeneratorTest
     extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class DocumentGeneratorTest
      *
      * @param testName name of the test case
      */
-    public DocumentGeneratorTest(String testName )
+    public InterfaceDocumentGeneratorTest(String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class DocumentGeneratorTest
      */
     public static Test suite()
     {
-        return new TestSuite( DocumentGeneratorTest.class );
+        return new TestSuite( InterfaceDocumentGeneratorTest.class );
     }
 
     /**
