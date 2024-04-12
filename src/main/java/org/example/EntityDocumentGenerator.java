@@ -35,6 +35,10 @@ public class EntityDocumentGenerator {
 
     public static final String semicolon = ";";
 
+    public static final String disable = "//";
+
+    public static final String atApiModelProperty = "@ApiModelProperty";
+
     public static void main(String[] args) throws IOException, TemplateException, ExecutionException, InterruptedException {
         long start = System.currentTimeMillis();
         generate();
@@ -46,6 +50,8 @@ public class EntityDocumentGenerator {
         String target = prefix + "实体结果.docx";
         File resourceDir = new File(prefix.substring(1) + "dto");
         File[] files = resourceDir.listFiles();
+//        File[] files1 = Arrays.copyOf(files, 1);
+//        File[] files2 = resourceDir.listFiles(f -> f.getName().equals("QueryPassportDTO.java"));
         List<Entity> itemList = covert1(files);
         System.out.println("complete");
         Map<String, Object> dataModel = new HashMap<>();
@@ -133,14 +139,14 @@ public class EntityDocumentGenerator {
             String[] splits = afterTrim.split(" ");
             if (splits.length > 1) {
                 if (hasChinese(splits[1])) {
-                    fileEntity.description = splits[1];
+                    fileEntity.description = FreemarkerWordFormatUtil.getFormatText(splits[1]);
                 } else if (splits[1].equals(atDesc1) || splits[1].equals(atDesc2)) {
                     if (splits.length > 2) {
                         String name = splits[2];
                         for (int i = 3; i < splits.length; i++) {
                             name += " " + splits[i];
                         }
-                        fileEntity.description= name;
+                        fileEntity.description= FreemarkerWordFormatUtil.getFormatText(name);
                     }
                 }
             }
@@ -159,7 +165,7 @@ public class EntityDocumentGenerator {
         boolean res = false;
         if (afterTrim.contains(classMark)) {
             String[] split = afterTrim.split(" ");
-            fileEntity.name = split[2];
+            fileEntity.name = FreemarkerWordFormatUtil.getFormatText(split[2]);
             res = true;
         }
         return res;
@@ -212,7 +218,7 @@ public class EntityDocumentGenerator {
                     while (line != null) {
                         if (!needJump) {
                             String afterTrim = line.trim();
-                            if (!afterTrim.equals("")) {
+                            if (!afterTrim.equals("") && !afterTrim.startsWith(disable)) {
                                 if (!readName) {
                                     parseDescription(fileEntity, afterTrim);
                                     readName = parseName(fileEntity, afterTrim);
@@ -224,8 +230,17 @@ public class EntityDocumentGenerator {
                                         for (int i = 1; i < splits.length; i++) {
                                             description += splits[i];
                                         }
-                                        param.description = description;
+                                        param.description = FreemarkerWordFormatUtil.getFormatText(description);
                                         paramDeque.push(param);
+                                    } else if (afterTrim.startsWith(atApiModelProperty)) {
+                                        // 如果有@ApiModelProperty注解,则解析内容为描述
+                                        Param peek = paramDeque.peek();
+                                        if (peek != null && !peek.name.equals("")) {
+                                            String[] splits = afterTrim.split("\"");
+                                            Param param = new Param();
+                                            param.description = FreemarkerWordFormatUtil.getFormatText(splits[1]);
+                                            paramDeque.push(param);
+                                        }
                                     } else if (afterTrim.endsWith(semicolon)) {
                                         String[] splits = afterTrim.split(" ");
                                         int typeIdx = 1, nameIdx = 2;
@@ -234,12 +249,17 @@ public class EntityDocumentGenerator {
                                             nameIdx = 1;
                                         }
                                         if (paramDeque.size() > 0 && paramDeque.peek().name.equals("")) {
-                                            paramDeque.peek().name = splits[nameIdx].substring(0, splits[nameIdx].length() - 1);
+                                            // 去除分号
+                                            String name = splits[nameIdx].endsWith(";") ? splits[nameIdx].substring(0, splits[nameIdx].length() - 1) : splits[nameIdx];
+                                            paramDeque.peek().name = FreemarkerWordFormatUtil.getFormatText(name);
                                             // 替换xml文件中的特殊字符
                                             paramDeque.peek().type = FreemarkerWordFormatUtil.getFormatText(splits[typeIdx]);
                                         } else {
                                             Param param = new Param();
-                                            param.name = splits[nameIdx];
+                                            // 去除分号
+                                            String name = splits[nameIdx].endsWith(";") ? splits[nameIdx].substring(0, splits[nameIdx].length() - 1) : splits[nameIdx];
+                                            param.name = FreemarkerWordFormatUtil.getFormatText(name);
+
                                             param.type = FreemarkerWordFormatUtil.getFormatText(splits[typeIdx]);
                                             paramDeque.push(param);
                                             if (complete) complete = false;
@@ -247,7 +267,7 @@ public class EntityDocumentGenerator {
                                     }
                                 }
                             }
-                        } else if (line.contains(startMark) || line.contains(atData)) {
+                        } else if (line.startsWith(startMark) || line.startsWith(atData)) {
                             needJump = false;
                         }
                         line = reader.readLine();
@@ -255,6 +275,7 @@ public class EntityDocumentGenerator {
                 }
                 // 打印信息不全的实体以便手动处理
                 if (!complete) System.out.println(fileEntity.name);
+
                 fileEntity.params = paramDeque.stream().toList();
                 entities.add(fileEntity);
             }

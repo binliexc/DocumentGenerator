@@ -1850,6 +1850,8 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
+                        <#if item.reqFields?exists && (item.reqFields?size > 0)>
+                        <#list item.reqFields as reqFields>
                         <w:tr>
                             <w:tblPrEx>
                                 <w:tblBorders>
@@ -1905,7 +1907,7 @@
                                         <w:rPr>
                                             <w:rFonts w:hint="default" />
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve"> MERGEFIELD ${item.reqFields.fieldName} \* MERGEFORMAT </w:instrText>
+                                        <w:instrText xml:space="preserve"> MERGEFIELD ${reqFields.fieldName} \* MERGEFORMAT </w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1917,7 +1919,7 @@
                                         <w:rPr>
                                             <w:rFonts w:hint="default" />
                                         </w:rPr>
-                                        <w:t>${item.reqFields.fieldName}</w:t>
+                                        <w:t>${reqFields.fieldName}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1965,7 +1967,7 @@
                                             <w:rFonts w:hint="default" />
                                             <w:lang w:eastAsia="zh-CN" />
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve"> MERGEFIELD ${item.reqFields.description} \* MERGEFORMAT </w:instrText>
+                                        <w:instrText xml:space="preserve"> MERGEFIELD ${reqFields.description} \* MERGEFORMAT </w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1979,7 +1981,7 @@
                                             <w:rFonts w:hint="default" />
                                             <w:lang w:eastAsia="zh-CN" />
                                         </w:rPr>
-                                        <w:t>${item.reqFields.description}</w:t>
+                                        <w:t>${reqFields.description}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2028,7 +2030,7 @@
                                             <w:rFonts w:hint="default" w:eastAsia="宋体" />
                                             <w:lang w:eastAsia="zh-CN" />
                                         </w:rPr>
-                                        <w:instrText xml:space="preserve"> MERGEFIELD ${item.reqFields.fieldType} \* MERGEFORMAT </w:instrText>
+                                        <w:instrText xml:space="preserve"> MERGEFIELD ${reqFields.fieldType} \* MERGEFORMAT </w:instrText>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2042,7 +2044,7 @@
                                             <w:rFonts w:hint="default" w:eastAsia="宋体" />
                                             <w:lang w:eastAsia="zh-CN" />
                                         </w:rPr>
-                                        <w:t>${item.reqFields.fieldType}</w:t>
+                                        <w:t>${reqFields.fieldType}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -2081,6 +2083,8 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
+                        </#list>
+                        </#if>
                     </w:tbl>
                     </#if>
                     <w:p>
@@ -3307,7 +3311,7 @@
                                 </w:p>
                             </w:tc>
                         </w:tr>
-                        
+                        <#if item.repFields?exists && (item.repFields?size > 0)>
                         <#list item.repFields as repParams>
                         <w:tr>
                             <w:tblPrEx>
@@ -3547,6 +3551,7 @@
                             </w:tc>
                         </w:tr>
                         </#list>
+                        </#if>
                     </w:tbl>
                     </#if>
                     <w:p>
