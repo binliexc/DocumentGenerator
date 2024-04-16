@@ -41,6 +41,13 @@ public class InterfaceDocumentGenerator {
      */
     private static JSONObject components = new JSONObject();
 
+    public static final String STRING = "string";
+    public static final String INTEGER = "integer";
+    public static final String NUMBER = "number";
+    public static final String BOOLEAN = "boolean";
+    public static final String OBJECT = "object";
+    public static final String DESCRIPTION = "description";
+
     public static void main( String[] args ) throws Exception {
         long start = System.currentTimeMillis();
         String prefix = InterfaceDocumentGenerator.class.getResource("/").getFile();
@@ -49,7 +56,7 @@ public class InterfaceDocumentGenerator {
         configuration.setDirectoryForTemplateLoading(new File(prefix));
         Template template = configuration.getTemplate("模板测试3.ftl", "utf-8");
         StringBuilder builder = new StringBuilder();
-        Files.lines(Path.of(prefix.substring(1) + "V4.openapi (12).json")).forEach(s -> builder.append(s));
+        Files.lines(Path.of(prefix.substring(1) + "V4.openapi (14).json")).forEach(s -> builder.append(s));
         List<InterfaceInfo> itemList = convert(builder.toString());
         Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("itemList", itemList);
@@ -81,7 +88,7 @@ public class InterfaceDocumentGenerator {
                 interfaceInfo.method = m.getKey();
             }
             JSONObject detail = midObject.getJSONObject(interfaceInfo.method);
-            interfaceInfo.description = detail.getString("description");
+            interfaceInfo.description = detail.getString(DESCRIPTION);
             String tagsStr = detail.getJSONArray("tags").getString(0);
             String[] tags = tagsStr.split("/");
             List<InterfaceInfo> interfaceInfos;
@@ -136,40 +143,31 @@ public class InterfaceDocumentGenerator {
                     if (normalField.dataType.equals("array")) {
                         JSONObject reqItems = schema.getJSONObject("items");
                         String type = reqItems.getString("type");
-                        if (!type.equals("object")) {
+                        if (!type.equals(OBJECT)) {
                             JSONArray array = new JSONArray();
-                            if (type.equals("string")) {
+                            if (type.equals(STRING)) {
                                 array.add("string");
-                            } else if (type.equals("integer")) {
+                            } else if (type.equals(INTEGER) || type.equals(NUMBER)) {
                                 array.add(0);
-                            } else if (type.equals("boolean")) {
+                            } else if (type.equals(BOOLEAN)) {
                                 array.add(true);
                             }
                             interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(array, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
                                     SerializerFeature.WriteDateUseDateFormat));
                         } else {
                             handleReqProperties(reqItems.getJSONObject("properties"), interfaceInfo);
-//                            ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(reqItems.getJSONObject("properties"));
-//                            interfaceInfo.reqFields = reqParamsAndJson.fields;
-//                            interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-//                                    SerializerFeature.WriteDateUseDateFormat));
                         }
                     } else {
                         handleReqProperties(schema.getJSONObject("properties"), interfaceInfo);
-//                        JSONObject properties = schema.getJSONObject("properties");
-//                        ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(properties);
-//                        interfaceInfo.reqFields = reqParamsAndJson.fields;
-//                        interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-//                                SerializerFeature.WriteDateUseDateFormat));
                     }
                 } else {
+                    normalField.dataType = OBJECT;
+                    NormalField[] req = new NormalField[1];
+                    req[0] = normalField;
+                    interfaceInfo.req = req;
                     String ref = schema.getString(REF);
                     JSONObject refComponent = components.getJSONObject(getComponentName(ref));
                     handleReqProperties(refComponent.getJSONObject("properties"), interfaceInfo);
-//                    ParamsAndJsonObject reqParamsAndJson = getReqRepParamsAndJson(refComponent.getJSONObject("properties"));
-//                    interfaceInfo.reqFields = reqParamsAndJson.fields;
-//                    interfaceInfo.reqJson = FreemarkerWordFormatUtil.getFormatText(JSON.toJSONString(reqParamsAndJson.jsonObject, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue,
-//                            SerializerFeature.WriteDateUseDateFormat));
                 }
             }
             JSONObject repContent = detail.getJSONObject("responses").getJSONObject("200").getJSONObject("content");
@@ -188,13 +186,7 @@ public class InterfaceDocumentGenerator {
                 }
                 if (!interfaceInfo.repDataType.equals("array") && !interfaceInfo.repDataType.equals("object")) {
                     repJsonObject.put("meta", meta);
-                    if (interfaceInfo.repDataType.equals("string")) {
-                        repJsonObject.put("data", "string");
-                    } else if (interfaceInfo.repDataType.equals("integer")) {
-                        repJsonObject.put("data", 0);
-                    } else if (interfaceInfo.repDataType.equals("boolean")) {
-                        repJsonObject.put("data", true);
-                    }
+                    setDefaultValue(repJsonObject, interfaceInfo.repDataType, "data");
                 } else {
                     JSONObject properties = null;
                     if (interfaceInfo.repDataType.equals("array")) {
@@ -205,7 +197,7 @@ public class InterfaceDocumentGenerator {
                             JSONObject refComponent = components.getJSONObject(getComponentName(ref));
                             properties = refComponent.getJSONObject("properties");
                         }
-                    } else if (interfaceInfo.repDataType.equals("object")) {
+                    } else if (interfaceInfo.repDataType.equals(OBJECT)) {
                         properties = data.getJSONObject("properties");
                     }
                     if (properties != null) {
@@ -294,7 +286,11 @@ public class InterfaceDocumentGenerator {
     private static void handleNormalParam(Field field, JSONObject val, List<Field> fields, JSONObject json) {
         if (val.getString(REF) == null) {
             field.fieldType = val.getString("type");
-            field.description = val.getString("title") == null ? "" : val.getString("title");
+            if (val.getString("title") != null) {
+                field.description = val.getString("title");
+            } else if (val.getString(DESCRIPTION) != null) {
+                field.description = val.getString(DESCRIPTION);
+            }
             fields.add(field);
             if (field.fieldType.equals("array")) {
                 JSONObject items = val.getJSONObject("items");
@@ -304,16 +300,16 @@ public class InterfaceDocumentGenerator {
                     JSONObject component = components.getJSONObject(getComponentName(ref));
                     Field componetField = new Field();
                     componetField.fieldName = ref;
-                    componetField.fieldType = "object";
-                    if (items.getString("description") != null) {
-                        componetField.description = items.getString("description");
+                    componetField.fieldType = OBJECT;
+                    if (items.getString(DESCRIPTION) != null) {
+                        componetField.description = items.getString(DESCRIPTION);
                     }
                     fields.add(componetField);
                     ParamsAndJsonObject refChildProperties = getReqRepParamsAndJson(component.getJSONObject("properties"));
                     fields.addAll(refChildProperties.fields);
                     array.add(refChildProperties.jsonObject);
                     fields.add(componetField);
-                } else if (items.getString("type").equals("object")) {
+                } else if (items.getString("type").equals(OBJECT)) {
                     ParamsAndJsonObject childProperties = getReqRepParamsAndJson(items.getJSONObject("properties"));
                     fields.addAll(childProperties.fields);
                     array.add(childProperties.jsonObject);
@@ -321,30 +317,41 @@ public class InterfaceDocumentGenerator {
                     Field stringField = new Field();
                     stringField.fieldType = items.getString("type");
                     fields.add(stringField);
-                    if (field.fieldType.equals("string")) {
+                    if (field.fieldType.equals(STRING)) {
                         array.add("string");
-                    } else if (field.fieldType.equals("integer")) {
+                    } else if (field.fieldType.equals(INTEGER) || field.fieldType.equals(NUMBER)) {
                         array.add(0);
-                    } else if (field.fieldType.equals("boolean")) {
+                    } else if (field.fieldType.equals(BOOLEAN)) {
                         array.add(true);
                     }
                 }
                 json.put(field.fieldName, array);
                 fields.add(field);
-            } else if (field.fieldType.equals("object")) {
+            } else if (field.fieldType.equals(OBJECT)) {
                 ParamsAndJsonObject reqRepParamsAndJson = getReqRepParamsAndJson(val.getJSONObject("properties"));
                 fields.addAll(reqRepParamsAndJson.fields);
                 fields.add(field);
                 json.put(field.fieldName, reqRepParamsAndJson.jsonObject);
             } else {
-                if (field.fieldType.equals("string")) {
-                    json.put(field.fieldName, "string");
-                } else if (field.fieldType.equals("integer")) {
-                    json.put(field.fieldName, 0);
-                } else if (field.fieldType.equals("boolean")) {
-                    json.put(field.fieldName, true);
-                }
+                setDefaultValue(json, field.fieldType, field.fieldName);
             }
+        }
+    }
+
+    /**
+     * 为 jsonObject 的 fieldName 字段设置默认值, 默认值由 fieldType 决定
+     *
+     * @param jsonObject
+     * @param fieldType
+     * @param fieldName
+     */
+    public static void setDefaultValue(JSONObject jsonObject, String fieldType, String fieldName) {
+        if (fieldType.equals(STRING)) {
+            jsonObject.put(fieldName, "string");
+        } else if (fieldType.equals(INTEGER) || fieldType.equals(NUMBER)) {
+            jsonObject.put(fieldName, 0);
+        } else if (fieldType.equals(BOOLEAN)) {
+            jsonObject.put(fieldName, true);
         }
     }
 
