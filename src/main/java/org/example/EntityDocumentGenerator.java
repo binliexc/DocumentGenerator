@@ -41,6 +41,8 @@ public class EntityDocumentGenerator {
 
     public static final String atApiModelProperty = "@ApiModelProperty";
 
+    public static final String serialVersionUIDPrefix = "private static final long serialVersionUID";
+
     public static void main(String[] args) throws IOException, TemplateException, ExecutionException, InterruptedException {
         long start = System.currentTimeMillis();
         generate();
@@ -53,7 +55,7 @@ public class EntityDocumentGenerator {
         File resourceDir = new File(prefix.substring(1) + "dto");
         File[] files = resourceDir.listFiles();
 //        File[] files1 = Arrays.copyOf(files, 1);
-//        File[] files2 = resourceDir.listFiles(f -> f.getName().equals("QueryPassportDTO.java"));
+//        File[] files2 = resourceDir.listFiles(f -> f.getName().equals("ChargeDetailVO.java"));
         List<Entity> itemList = covert1(files);
         System.out.println("complete");
         Map<String, Object> dataModel = new HashMap<>();
@@ -227,25 +229,30 @@ public class EntityDocumentGenerator {
                     while (line != null) {
                         if (!needJump) {
                             String afterTrim = line.trim();
+                            if (afterTrim.startsWith(serialVersionUIDPrefix)) {
 
-                            if (!afterTrim.equals("") && !afterTrim.startsWith(disable)) {
+                            } else if (!afterTrim.equals("") && !afterTrim.startsWith(disable)) {
                                 if (!readName) {
                                     parseDescription(fileEntity, afterTrim);
                                     readName = parseName(fileEntity, afterTrim);
                                 } else {
-                                    if (!afterTrim.startsWith("*/") && afterTrim.startsWith("*")) {
+                                    if (!afterTrim.startsWith("*/") && !afterTrim.startsWith("* */") && afterTrim.startsWith("*")) {
                                         String[] splits = afterTrim.split(" ");
                                         Param param = new Param();
                                         String description = "";
-                                        for (int i = 1; i < splits.length; i++) {
-                                            description += splits[i];
+                                        for (int i = 0; i < splits.length; i++) {
+                                            if (i != 0) {
+                                                description += splits[i];
+                                            } else if (i == 0 && splits[i].startsWith("*") && splits[i].length() > 1) {
+                                                description += splits[i].substring(1);
+                                            }
                                         }
                                         param.description = FreemarkerWordFormatUtil.getFormatText(description);
                                         paramDeque.push(param);
                                     } else if (afterTrim.startsWith(atApiModelProperty)) {
                                         // 如果有@ApiModelProperty注解,则解析内容为描述
                                         Param peek = paramDeque.peek();
-                                        if (peek != null && !peek.name.equals("")) {
+                                        if ((peek != null && !peek.name.equals("")) || peek == null) {
                                             String[] splits = afterTrim.split("\"");
                                             Param param = new Param();
                                             param.description = FreemarkerWordFormatUtil.getFormatText(splits[1]);
