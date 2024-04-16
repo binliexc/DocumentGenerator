@@ -21,6 +21,8 @@ public class EntityDocumentGenerator {
 
     public static final String star = "*";
 
+    public static final String atApiModel = "@ApiModel";
+
     public static final String atData = "@Data";
 
     public static final String atDesc1 = "@Description";
@@ -150,6 +152,11 @@ public class EntityDocumentGenerator {
                     }
                 }
             }
+        } else if (afterTrim.startsWith(atApiModel)) {
+            String[] splits = afterTrim.split("\"");
+            if (splits.length > 1) {
+                fileEntity.description = FreemarkerWordFormatUtil.getFormatText(splits[1]);
+            }
         }
     }
 
@@ -211,13 +218,16 @@ public class EntityDocumentGenerator {
                 Entity fileEntity = new Entity();
                 boolean complete = true;
                 Deque<Param> paramDeque = new ArrayDeque<>();
+                // 是否已读取类名称
                 boolean readName = false;
+
                 try (BufferedReader reader = Files.newBufferedReader(Path.of(f.getAbsolutePath()))) {
                     String line = reader.readLine();
                     boolean needJump = true;
                     while (line != null) {
                         if (!needJump) {
                             String afterTrim = line.trim();
+
                             if (!afterTrim.equals("") && !afterTrim.startsWith(disable)) {
                                 if (!readName) {
                                     parseDescription(fileEntity, afterTrim);
