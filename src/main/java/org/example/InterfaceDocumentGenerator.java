@@ -60,7 +60,7 @@ public class InterfaceDocumentGenerator {
         configuration.setDirectoryForTemplateLoading(new File(prefix));
         Template template = configuration.getTemplate("模板测试3.ftl", "utf-8");
         StringBuilder builder = new StringBuilder();
-        Files.lines(Path.of(prefix.substring(1) + "深航全渠道退项目.openapi(2).json")).forEach(s -> builder.append(s));
+        Files.lines(Path.of(prefix.substring(1) + "input.json")).forEach(s -> builder.append(s));
         List<InterfaceInfo> itemList = convert(builder.toString());
         Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("itemList", itemList);
