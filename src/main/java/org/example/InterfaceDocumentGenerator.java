@@ -47,6 +47,10 @@ public class InterfaceDocumentGenerator {
     public static final String BOOLEAN = "boolean";
     public static final String OBJECT = "object";
     public static final String DESCRIPTION = "description";
+    // ApiFox 中导出 json 后 « 和 » 分别会被下面的字符串代替,
+    // « 的 UTF-8 编码为\xC2\xAB, » 的 UTF-8 编码为\xC2\xBB
+    public static final String LEFT_DOUBLE_ANGLE_QUOTATION_MARK = "%C2%AB";
+    public static final String RIGHT_DOUBLE_ANGLE_QUOTATION_MARK = "%C2%BB";
 
     public static void main( String[] args ) throws Exception {
         long start = System.currentTimeMillis();
@@ -56,7 +60,7 @@ public class InterfaceDocumentGenerator {
         configuration.setDirectoryForTemplateLoading(new File(prefix));
         Template template = configuration.getTemplate("模板测试3.ftl", "utf-8");
         StringBuilder builder = new StringBuilder();
-        Files.lines(Path.of(prefix.substring(1) + "V4.openapi (14).json")).forEach(s -> builder.append(s));
+        Files.lines(Path.of(prefix.substring(1) + "深航全渠道退项目.openapi(2).json")).forEach(s -> builder.append(s));
         List<InterfaceInfo> itemList = convert(builder.toString());
         Map<String, Object> dataModel = new HashMap<>();
         dataModel.put("itemList", itemList);
@@ -357,15 +361,21 @@ public class InterfaceDocumentGenerator {
 
     /**
      * 根据 ref 返回组件名称, 例：
+     * 1)
      * ref = "#/components/schemas/挂起申请单查询（审核复审）",
-     * 返回字符串 "挂起申请单查询（审核复审）"
+     * return = "挂起申请单查询（审核复审）"
+     * 2)
+     * ref = "#/components/schemas/Map%C2%ABOrderInfoDto%C2%BB"
+     * return = "MapOrderInfoDto%C2%BB"
      *
      * @param ref
      * @return 组件名称
      */
     private static String getComponentName(String ref) {
         String[] refSplits = ref.split("/");
-        return refSplits[refSplits.length - 1];
+        return refSplits[refSplits.length - 1]
+                .replace(LEFT_DOUBLE_ANGLE_QUOTATION_MARK, "«")
+                .replace(RIGHT_DOUBLE_ANGLE_QUOTATION_MARK, "»");
     }
 
     public static class ParamsAndJsonObject {
